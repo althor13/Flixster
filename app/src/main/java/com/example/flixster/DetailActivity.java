@@ -1,6 +1,7 @@
 package com.example.flixster;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import com.codepath.asynchttpclient.AsyncHttpClient;
 import com.codepath.asynchttpclient.callback.JsonHttpResponseHandler;
+import com.example.flixster.databinding.ActivityDetailBinding;
 import com.example.flixster.models.Movie;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -26,6 +28,7 @@ public class DetailActivity extends YouTubeBaseActivity {
     public static final String YOUTUBE_API_KEY = "AIzaSyBgmC5P8d0dIlsmewjAg9c_cWUraayDjAI";
     public static final String  VIDEOS_URL = "https://api.themoviedb.org/3/movie/%d/videos?api_key=a07e22bc18f5cb106bfe4cc1f83ad8ed";
 
+    private ActivityDetailBinding binding;
     TextView tvTitle;
     TextView tvOverview;
     RatingBar ratingBar;
@@ -34,12 +37,12 @@ public class DetailActivity extends YouTubeBaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
+        binding = DataBindingUtil.setContentView(this,R.layout.activity_detail);
 
-        tvTitle = findViewById(R.id.tvTitle1);
-        tvOverview = findViewById(R.id.tvOverview1);
-        ratingBar = findViewById(R.id.ratingBar);
-        youTubePlayerView = findViewById(R.id.player);
+        tvTitle = binding.tvTitle1;
+        tvOverview = binding.tvOverview1;
+        ratingBar = binding.ratingBar;
+        youTubePlayerView = binding.player;
 
         Movie movie = Parcels.unwrap(getIntent().getParcelableExtra("movie"));
         tvTitle.setText(movie.getTitle());
@@ -76,7 +79,13 @@ public class DetailActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 Log.d("DetailActivity","onInitializationSuccess");
-                youTubePlayer.cueVideo(youtubeKey);
+
+                if(ratingBar.getRating() > 5){
+                    youTubePlayer.loadVideo(youtubeKey);
+                }
+                else{
+                    youTubePlayer.cueVideo(youtubeKey);
+                }
             }
 
             @Override

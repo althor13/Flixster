@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".DetailActivity"
-    android:orientation="vertical"
-    >
+    xmlns:tools="http://schemas.android.com/tools">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".DetailActivity"
+        android:orientation="vertical"
+        android:transitionName="transition">
 
     <com.google.android.youtube.player.YouTubePlayerView
         android:id="@+id/player"
@@ -36,3 +36,5 @@
         android:layout_height="wrap_content"
         android:text="27 years after overcoming the malevolent supernatural entity Pennywise, the former members of the Losers' Club, who have grown up and moved away from Derry, are brought back together by a devastating phone call." />
 </LinearLayout>
+
+</layout>
