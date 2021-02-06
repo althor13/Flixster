@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,17 +15,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.Adapter;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.resource.bitmap.FitCenter;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.flixster.DetailActivity;
 import com.example.flixster.MainActivity;
 import com.example.flixster.R;
-import com.example.flixster.databinding.ItemMovieBinding;
 import com.example.flixster.models.Movie;
 
 import org.parceler.Parcels;
@@ -73,6 +79,7 @@ public class MovieAdapter extends Adapter<MovieAdapter.ViewHolder> {
         TextView tvOverview;
         ImageView ivPoster;
         RelativeLayout container;
+        ImageView ivIcon;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +87,7 @@ public class MovieAdapter extends Adapter<MovieAdapter.ViewHolder> {
             tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
             container = itemView.findViewById(R.id.container);
+            ivIcon = itemView.findViewById(R.id.ivIcon);
         }
 
         public void bind(Movie movie) {
@@ -96,7 +104,24 @@ public class MovieAdapter extends Adapter<MovieAdapter.ViewHolder> {
             }
             int radius = 30;
             int margin = 0;
-            Glide.with(context).load(imageUrl).transform(new FitCenter(), new RoundedCornersTransformation(radius,margin)).into(ivPoster);
+            Glide.with(context).load(imageUrl).listener(new RequestListener<Drawable>() {
+                @Override
+                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                    return false;
+                }
+
+                @Override
+                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                    if(movie.getRating() > 5) {
+                        ivIcon.setImageResource(R.drawable.yt_icon_rgb);
+                        ivIcon.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        ivIcon.setVisibility(View.INVISIBLE);
+                    }
+                    return false;
+                }
+            }).transform(new FitCenter(), new RoundedCornersTransformation(radius,margin)).into(ivPoster);
 
             // 1. Register click listener on the whole row
             container.setOnClickListener(new View.OnClickListener() {
